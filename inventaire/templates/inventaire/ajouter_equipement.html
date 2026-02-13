@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter un équipement</title>
+    <style>
+        /* --- MÊME CSS QUE "AJOUTER UN SECTEUR" POUR L'UNIFORMITÉ --- */
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --danger-color: #ef4444;
+            --success-color: #10b981;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-900: #111827;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 1.5rem 0;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            margin-bottom: 0.5rem;
+        }
+
+        .breadcrumb a {
+            color: var(--gray-600);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--primary-color);
+        }
+
+        .page-title-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .page-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: var(--shadow-md);
+            color: white;
+        }
+
+        h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            letter-spacing: -0.025em;
+        }
+
+        /* Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem 3rem;
+        }
+
+        /* Form Card */
+        .form-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+            overflow: hidden;
+        }
+
+        .form-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--gray-200);
+            background: var(--gray-50);
+        }
+
+        .form-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .form-subtitle {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        .form-body {
+            padding: 2rem;
+        }
+
+        /* Form Fields */
+        form p {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gray-700);
+            margin-bottom: 0.5rem;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.625rem 0.875rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-family: inherit;
+            transition: all 0.2s;
+            background: white;
+            color: var(--gray-900);
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Actions */
+        .form-actions {
+            padding: 1.5rem 2rem;
+            background: var(--gray-50);
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.25rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 8px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--gray-700);
+            border: 1px solid var(--gray-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-50);
+        }
+
+        /* Required Field Indicator */
+        label:has(+ input:required)::after,
+        label:has(+ select:required)::after,
+        label:has(+ textarea:required)::after {
+            content: "*";
+            color: var(--danger-color);
+            margin-left: 0.25rem;
+        }
+
+        /* Errors */
+        .errorlist {
+            list-style: none;
+            margin-top: 0.25rem;
+            color: var(--danger-color);
+            font-size: 0.75rem;
+        }
+        
+        .field-error input, .field-error select {
+            border-color: var(--danger-color);
+            background-color: #fef2f2;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .form-actions {
+                flex-direction: column-reverse;
+            }
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="breadcrumb">
+                <a href="{% url 'home' %}">Accueil</a>
+                <span>/</span>
+                <a href="{% url 'home' %}">Equipements</a>
+                <span>/</span>
+                <span>Ajouter</span>
+            </div>
+            <div class="page-title-section">
+                <!-- Icône changée pour correspondre au matériel -->
+                <div class="page-icon">💻</div>
+                <h1>Ajouter un équipement</h1>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <div class="form-card">
+            <div class="form-header">
+                <div class="form-title">Nouveau matériel</div>
+                <div class="form-subtitle">Remplissez les caractéristiques techniques de l'équipement informatique.</div>
+            </div>
+
+            <div class="form-body">
+                <!-- Formulaire -->
+                <form method="post" id="equipementForm">
+                    {% csrf_token %}
+                    
+                    <!-- Affichage standard du formulaire Django -->
+                    {{ form.as_p }}
+                </form>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'home' %}" class="btn btn-secondary">
+                    <span>←</span>
+                    <span>Annuler</span>
+                </a>
+                <button type="submit" form="equipementForm" class="btn btn-primary">
+                    <span>💾</span>
+                    <span>Enregistrer</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+         document.addEventListener('DOMContentLoaded', function() {
+            // Sélectionne les listes d'erreurs générées par Django
+            const errorLists = document.querySelectorAll('.errorlist');
+            
+            errorLists.forEach(errorList => {
+                // Trouve l'élément parent (souvent le <p>) et ajoute une classe pour le style
+                const fieldContainer = errorList.parentElement;
+                if (fieldContainer) {
+                    const input = fieldContainer.querySelector('input, select, textarea');
+                    if (input) {
+                        input.classList.add('error-border');
+ 
+                    }
+                }
+            });
+        });
+    </script>
+
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const marqueSelect = document.getElementById("marqueSelect");
+    const modeleSelect = document.getElementById("modeleSelect");
+
+     const modelsByBrand = {
+        HP: [
+            "HP ELITE TOWER 600 G9",
+            "HP ProDesk 400 G9",
+            "HP ProDesk 400 G7",
+            "HP ProDesk 400 G4",
+            "HP ProBook 650 G4",
+            "HP ProBook 650 G3",
+            "HP 4500 fn",
+            "HP SCANJET 7500",
+            "ScanJet Pro 3000 s4",
+            "Scnajet Pro 2500",
+            "LaserJet Pro M501dn"
+        ],
+        Lenovo: [
+            "Lenovo Desktop TC M90t G5",
+            "Lenovo ThinkCenter neo 50t G4",
+            "Lenovo ThinkPad L570",
+            "Mini-PC ThinkPad L13 Gen4"
+        ],
+        Lexmark: [
+            "Lexmark CX431",
+            "Lexmark MS421",
+            "Lexmark MS431",
+            "Lexmark MS521"
+        ]
+    };
+
+     const allModeles = Array.from(modeleSelect.options);
+
+     marqueSelect.addEventListener("change", function () {
+        const selectedMarque = marqueSelect.value;
+
+        modeleSelect.innerHTML = ""; // on vide la liste
+
+        if (!modelsByBrand[selectedMarque]) {
+            // Si pas de marque sélectionnée → remettre tout
+            allModeles.forEach(opt => modeleSelect.appendChild(opt.cloneNode(true)));
+            return;
+        }
+
+        const allowedModels = modelsByBrand[selectedMarque];
+
+        // Ajouter uniquement les modèles autorisés
+        allModeles.forEach(opt => {
+            if (allowedModels.includes(opt.value)) {
+                modeleSelect.appendChild(opt.cloneNode(true));
+            }
+        });
+
+        // Auto-select si un seul modèle
+        if (modeleSelect.options.length === 1) {
+            modeleSelect.value = modeleSelect.options[0].value;
+        }
+    });
+});
+</script>
+
+
+</body>
+</html>

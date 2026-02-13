@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier un Équipement</title>
+    <style>
+         :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --danger-color: #ef4444;
+            --danger-hover: #dc2626;
+            --success-color: #10b981;
+            --warning-color: #f59e0b; /* Couleur Orange pour l'édition */
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-900: #111827;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 1.5rem 0;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            margin-bottom: 0.5rem;
+        }
+
+        .breadcrumb a {
+            color: var(--gray-600);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--primary-color);
+        }
+
+        .page-title-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Icône avec fond orange pour signifier "Modification" */
+        .page-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--warning-color), #f97316);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: var(--shadow-md);
+            color: white;
+        }
+
+        .page-title-wrapper {
+            flex: 1;
+        }
+
+        h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            letter-spacing: -0.025em;
+        }
+
+        .id-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            background: var(--gray-100);
+            color: var(--gray-700);
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.375rem;
+        }
+
+        /* Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem 3rem;
+        }
+
+        /* Info Alert */
+        .info-alert {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(79, 70, 229, 0.05));
+            border: 1px solid rgba(79, 70, 229, 0.2);
+            border-left: 4px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .info-alert-icon {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .info-alert-content {
+            flex: 1;
+        }
+
+        .info-alert-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .info-alert-text {
+            font-size: 0.875rem;
+            color: var(--gray-700);
+        }
+
+        .info-alert-text strong {
+            color: var(--gray-900);
+            font-weight: 600;
+        }
+
+        /* Form Card */
+        .form-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+            overflow: hidden;
+        }
+
+        .form-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--gray-200);
+            background: var(--gray-50);
+        }
+
+        .form-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .form-subtitle {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        .form-body {
+            padding: 2rem;
+        }
+
+        /* Form Fields */
+        form p {
+            margin-bottom: 1.5rem;
+        }
+
+        form p:last-of-type {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gray-700);
+            margin-bottom: 0.5rem;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.625rem 0.875rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-family: inherit;
+            transition: all 0.2s;
+            background: white;
+            color: var(--gray-900);
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        /* Error Styles */
+        .errorlist {
+            list-style: none;
+            margin: 0.5rem 0 0 0;
+            padding: 0;
+        }
+
+        .errorlist li {
+            color: var(--danger-color);
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+        input.error, select.error, textarea.error {
+            border-color: var(--danger-color);
+            background-color: #fef2f2;
+        }
+
+        /* Actions */
+        .form-actions {
+            padding: 1.5rem 2rem;
+            background: var(--gray-50);
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.25rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 8px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--gray-700);
+            border: 1px solid var(--gray-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-50);
+            border-color: var(--gray-400);
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-danger:hover {
+            background: var(--danger-hover);
+            transform: translateY(-1px);
+        }
+
+        /* Indicators */
+        label:has(+ input:required)::after,
+        label:has(+ select:required)::after {
+            content: "*";
+            color: var(--danger-color);
+            margin-left: 0.25rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content { padding: 0 1rem; }
+            .container { padding: 0 1rem 2rem; }
+            .form-actions { flex-direction: column-reverse; }
+            .btn { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="breadcrumb">
+                <a href="{% url 'home' %}">Accueil</a>
+                <span>/</span>
+                <a href="{% url 'home' %}">Equipements</a>
+                <span>/</span>
+                <span>Modifier</span>
+            </div>
+            <div class="page-title-section">
+                <!-- Icône 💻 avec fond orange pour l'édition -->
+                <div class="page-icon">💻</div>
+                <div class="page-title-wrapper">
+                    <h1>Modifier l'équipement</h1>
+                    {% if equipement %}
+                    <span class="id-badge">
+                        <span>🆔</span>
+                        <span>#{{ equipement.id }}</span>
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Info Alert -->
+        {% if equipement %}
+        <div class="info-alert">
+            <div class="info-alert-icon">💡</div>
+            <div class="info-alert-content">
+                <div class="info-alert-title">Modification en cours</div>
+                <div class="info-alert-text">
+                    Vous modifiez le matériel : <strong>{{ equipement.marque }} {{ equipement.modele }}</strong>
+                    {% if equipement.sn %} (S/N: {{ equipement.sn }}){% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Form Card -->
+        <div class="form-card">
+            <div class="form-header">
+                <div class="form-title">Caractéristiques techniques</div>
+                <div class="form-subtitle">Mettez à jour les informations ci-dessous et enregistrez vos modifications.</div>
+            </div>
+
+            <div class="form-body">
+                <form method="post" id="editEquipementForm">
+                    {% csrf_token %}
+                    <!-- Affichage standard du formulaire -->
+                    {{ form.as_p }}
+                </form>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'liste_equipements' %}" class="btn btn-secondary">
+                    <span>←</span>
+                    <span>Annuler</span>
+                </a>
+                <button type="submit" form="editEquipementForm" class="btn btn-primary">
+                    <span>💾</span>
+                    <span>Enregistrer les modifications</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Section Suppression (Zone de danger) -->
+        {% if equipement %}
+        <div class="form-card" style="margin-top: 1.5rem; border-color: rgba(239, 68, 68, 0.3);">
+            <div class="form-header" style="background: rgba(239, 68, 68, 0.05);">
+                <div class="form-title" style="color: var(--danger-color);">Zone de danger</div>
+                <div class="form-subtitle">Cette action est irréversible. Le matériel sera retiré de l'inventaire.</div>
+            </div>
+            <div class="form-body">
+                <p style="color: var(--gray-700); font-size: 0.875rem; margin-bottom: 1rem;">
+                    Assurez-vous que cet équipement n'est plus utilisé avant de le supprimer.
+                </p>
+                <a href="{% url 'supprimer_equipement' equipement.id %}" 
+                   class="btn btn-danger"
+                   onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet équipement définitivement ?');">
+                    <span>🗑️</span>
+                    <span>Supprimer cet équipement</span>
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // Script pour surligner en rouge les champs avec erreurs
+        document.addEventListener('DOMContentLoaded', function() {
+            const errorLists = document.querySelectorAll('.errorlist');
+            errorLists.forEach(errorList => {
+                const field = errorList.previousElementSibling;
+                if (field && (field.tagName === 'INPUT' || field.tagName === 'SELECT' || field.tagName === 'TEXTAREA')) {
+                    field.classList.add('error');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

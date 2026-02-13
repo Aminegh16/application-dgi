@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier un Fonctionnaire</title>
+    <style>
+        /* --- STYLE "PROPRE / ENTREPRISE" --- */
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --danger-color: #ef4444;
+            --success-color: #10b981;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-900: #111827;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 1.5rem 0;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            margin-bottom: 0.5rem;
+        }
+
+        .breadcrumb a {
+            color: var(--gray-600);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--primary-color);
+        }
+
+        .page-title-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .page-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: var(--shadow-md);
+            color: white;
+        }
+
+        h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            letter-spacing: -0.025em;
+        }
+
+        /* Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem 3rem;
+        }
+
+        /* Form Card */
+        .form-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+            overflow: hidden;
+        }
+
+        .form-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--gray-200);
+            background: var(--gray-50);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .form-title-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .form-subtitle {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        .ppr-badge {
+            background: white;
+            border: 1px solid var(--gray-300);
+            color: var(--primary-color);
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-family: monospace;
+            font-weight: 600;
+            font-size: 0.875rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .form-body {
+            padding: 2rem;
+        }
+
+        /* Form Fields */
+        form p {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gray-700);
+            margin-bottom: 0.5rem;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        input[type="date"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 0.625rem 0.875rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-family: inherit;
+            transition: all 0.2s;
+            background: white;
+            color: var(--gray-900);
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        /* Disabled Fields */
+        input:disabled,
+        select:disabled {
+            background-color: var(--gray-100);
+            color: var(--gray-500);
+            cursor: not-allowed;
+            border-color: var(--gray-200);
+        }
+
+        /* Actions */
+        .form-actions {
+            padding: 1.5rem 2rem;
+            background: var(--gray-50);
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.25rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 8px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--gray-700);
+            border: 1px solid var(--gray-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-50);
+        }
+
+        /* Required Field Indicator */
+        label:has(+ input:required)::after,
+        label:has(+ select:required)::after {
+            content: "*";
+            color: var(--danger-color);
+            margin-left: 0.25rem;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: rgba(79, 70, 229, 0.05);
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .info-icon {
+            font-size: 1.25rem;
+        }
+
+        .info-text {
+            font-size: 0.875rem;
+            color: var(--gray-700);
+        }
+
+        /* Errors */
+        .errorlist {
+            list-style: none;
+            margin-top: 0.25rem;
+            color: var(--danger-color);
+            font-size: 0.75rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-actions {
+                flex-direction: column-reverse;
+            }
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="breadcrumb">
+                <a href="{% url 'home' %}">Accueil</a>
+                <span>/</span>
+                <a href="{% url 'liste_fonctionnaires' %}">Fonctionnaires</a>
+                <span>/</span>
+                <span>Modifier</span>
+            </div>
+            <div class="page-title-section">
+                <div class="page-icon">✏️</div>
+                <h1>Modifier un fonctionnaire</h1>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <div class="form-card">
+            <div class="form-header">
+                <div class="form-title-group">
+                    <div class="form-title">Mise à jour des informations</div>
+                    <div class="form-subtitle">Modifiez les détails personnels ou l'affectation.</div>
+                </div>
+                {% if fonctionnaire.ppr %}
+                <div class="ppr-badge">
+                    PPR: {{ fonctionnaire.ppr }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="form-body">
+                <div class="info-box">
+                    <span class="info-icon">ℹ️</span>
+                    <div class="info-text">
+                        Vous modifiez actuellement le profil de <strong>{{ fonctionnaire.nom }} {{ fonctionnaire.prenom }}</strong>.
+                    </div>
+                </div>
+
+                <!-- Formulaire avec IDs et Data URLs pour AJAX -->
+                <form method="post" id="fonctionnaireForm" 
+                      data-subdivisions-url="{% url 'ajax_load_subdivisions' %}"
+                      data-secteurs-url="{% url 'ajax_load_secteurs' %}">
+                    {% csrf_token %}
+                    
+                    {{ form.as_p }}
+                </form>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'liste_fonctionnaires' %}" class="btn btn-secondary">
+                    <span>←</span>
+                    <span>Annuler</span>
+                </a>
+                <button type="submit" form="fonctionnaireForm" class="btn btn-primary">
+                    <span>💾</span>
+                    <span>Enregistrer les modifications</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Cascade (Adapté pour l'édition) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const serviceSelect = document.querySelector('#id_service');
+            const subdivisionSelect = document.querySelector('#id_subdivision');
+            const secteurSelect = document.querySelector('#id_secteur');
+            const form = document.querySelector('#fonctionnaireForm');
+            
+            if(serviceSelect && subdivisionSelect && form) {
+
+                // NOTE IMPORTANTE POUR "EDIT":
+                // Contrairement à "Add", on ne désactive PAS les champs au chargement
+                // s'ils ont déjà une valeur (ce qui est le cas en modification).
+                // On applique la logique seulement si les champs sont vides.
+
+                if (!serviceSelect.value) {
+                    subdivisionSelect.disabled = true;
+                    if (secteurSelect) secteurSelect.disabled = true;
+                } else if (!subdivisionSelect.value && secteurSelect) {
+                    secteurSelect.disabled = true;
+                }
+
+                // 1. Changement de SERVICE
+                serviceSelect.addEventListener('change', function() {
+                    const serviceId = this.value;
+                    const url = form.getAttribute('data-subdivisions-url');
+
+                    // Reset visuel
+                    subdivisionSelect.innerHTML = '<option value="">Chargement...</option>';
+                    subdivisionSelect.disabled = true;
+                    
+                    if (secteurSelect) {
+                        secteurSelect.innerHTML = '<option value="">---------</option>';
+                        secteurSelect.disabled = true;
+                    }
+
+                    if (!serviceId) {
+                        subdivisionSelect.innerHTML = '<option value="">---------</option>';
+                        return;
+                    }
+
+                    document.body.style.cursor = 'wait';
+
+                    fetch(`${url}?service_id=${serviceId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            subdivisionSelect.innerHTML = '<option value="">Choisissez une subdivision</option>';
+                            data.forEach(function(item) {
+                                const option = document.createElement('option');
+                                option.value = item.id;
+                                option.textContent = item.libelle;
+                                subdivisionSelect.appendChild(option);
+                            });
+                            subdivisionSelect.disabled = false;
+                            document.body.style.cursor = 'default';
+                        })
+                        .catch(error => {
+                            console.error('Erreur:', error);
+                            document.body.style.cursor = 'default';
+                        });
+                });
+
+                // 2. Changement de SUBDIVISION
+                if (secteurSelect) {
+                    subdivisionSelect.addEventListener('change', function() {
+                        const subdivisionId = this.value;
+                        const url = form.getAttribute('data-secteurs-url');
+
+                        secteurSelect.innerHTML = '<option value="">Chargement...</option>';
+                        secteurSelect.disabled = true;
+
+                        if (!subdivisionId) {
+                            secteurSelect.innerHTML = '<option value="">---------</option>';
+                            return;
+                        }
+
+                        document.body.style.cursor = 'wait';
+
+                        fetch(`${url}?subdivision_id=${subdivisionId}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                secteurSelect.innerHTML = '<option value="">Choisissez un secteur</option>';
+                                data.forEach(function(item) {
+                                    const option = document.createElement('option');
+                                    option.value = item.id;
+                                    option.textContent = item.libelle;
+                                    secteurSelect.appendChild(option);
+                                });
+                                secteurSelect.disabled = false;
+                                document.body.style.cursor = 'default';
+                            })
+                            .catch(error => {
+                                console.error('Erreur:', error);
+                                document.body.style.cursor = 'default';
+                            });
+                    });
+                }
+            }
+        });
+
+        // Application du style rouge aux champs en erreur
+        const errorLists = document.querySelectorAll('.errorlist');
+        errorLists.forEach(errorList => {
+            const field = errorList.previousElementSibling;
+            if (field) field.style.borderColor = 'var(--danger-color)';
+        });
+    </script>
+</body>
+</html>

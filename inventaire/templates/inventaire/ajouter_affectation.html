@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Affecter un nouvel équipement</title>
+    
+    <!-- 1. IMPORT IMPORTANT : HTMX pour la dynamique -->
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+
+    <style>
+         :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --danger-color: #ef4444;
+            --success-color: #10b981;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-900: #111827;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: var(--gray-50); color: var(--gray-900); line-height: 1.6; min-height: 100vh; }
+        
+        /* Header */
+        .header { background: white; border-bottom: 1px solid var(--gray-200); padding: 1.5rem 0; margin-bottom: 2rem; box-shadow: var(--shadow-sm); }
+        .header-content { max-width: 800px; margin: 0 auto; padding: 0 2rem; }
+        .breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: var(--gray-600); margin-bottom: 0.5rem; }
+        .breadcrumb a { color: var(--gray-600); text-decoration: none; transition: color 0.2s; }
+        .breadcrumb a:hover { color: var(--primary-color); }
+        .page-title-section { display: flex; align-items: center; gap: 1rem; }
+        .page-icon { width: 75px; height: 50px; background: linear-gradient(135deg, var(--primary-color), var(--primary-hover)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: var(--shadow-md); }
+        h1 { font-size: 1.875rem; font-weight: 700; color: var(--gray-900); letter-spacing: -0.025em; }
+
+        /* Container & Card */
+        .container { max-width: 800px; margin: 0 auto; padding: 0 2rem 3rem; }
+        .form-card { background: white; border-radius: 12px; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); overflow: hidden; }
+        .form-header { padding: 1.5rem 2rem; border-bottom: 1px solid var(--gray-200); background: var(--gray-50); }
+        .form-title { font-size: 1.125rem; font-weight: 600; color: var(--gray-900); margin-bottom: 0.25rem; }
+        .form-subtitle { font-size: 0.875rem; color: var(--gray-600); }
+        .form-body { padding: 2rem; }
+
+        /* Inputs & Layout */
+        form p { margin-bottom: 1.5rem; } /* Important pour l'espacement */
+        form p:last-of-type { margin-bottom: 0; }
+        label { display: block; font-size: 0.875rem; font-weight: 500; color: var(--gray-700); margin-bottom: 0.5rem; }
+        
+        input[type="text"], input[type="email"], input[type="number"], input[type="date"], input[type="tel"], select, textarea {
+            width: 100%; padding: 0.625rem 0.875rem; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 0.875rem; font-family: inherit; transition: all 0.2s; background: white; color: var(--gray-900);
+        }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
+        
+        /* Errors */
+        .errorlist { list-style: none; margin: 0.5rem 0 0 0; padding: 0; }
+        .errorlist li { color: var(--danger-color); font-size: 0.75rem; margin-top: 0.25rem; display: flex; align-items: center; gap: 0.375rem; }
+        
+        /* Actions */
+        .form-actions { padding: 1.5rem 2rem; background: var(--gray-50); border-top: 1px solid var(--gray-200); display: flex; gap: 0.75rem; justify-content: flex-end; }
+        .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.625rem 1.25rem; font-size: 0.875rem; font-weight: 500; border-radius: 8px; text-decoration: none; border: none; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+        .btn-primary { background: var(--primary-color); color: white; box-shadow: var(--shadow-sm); }
+        .btn-secondary { background: white; color: var(--gray-700); border: 1px solid var(--gray-300); }
+        
+        /* Info Box */
+        .info-box { background: rgba(79, 70, 229, 0.05); border-left: 4px solid var(--primary-color); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; }
+        .info-box-title { font-weight: 600; color: var(--primary-color); margin-bottom: 0.25rem; font-size: 0.875rem; display: flex; align-items: center; gap: 0.5rem; }
+        .info-box-text { font-size: 0.875rem; color: var(--gray-700); }
+
+        /* Responsive */
+        @media (max-width: 768px) { .form-actions { flex-direction: column-reverse; } .btn { width: 100%; justify-content: center; } }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="breadcrumb">
+                <a href="{% url 'home' %}">Accueil</a> 
+                <span>/</span>
+                <a href="{% url 'liste_affectations'%}">Listes des Affectations</a>
+                <span>/</span>
+                <span>Ajouter</span>
+            </div>
+            <div class="page-title-section">
+                <div class="page-icon">➡️💻</div>
+                <h1>Ajouter une affectation</h1>
+            </div>
+        </div>
+    </div>
+
+<!-- Main Container -->
+<div class="container">
+    <div class="form-card">
+        <div class="form-header">
+            <div class="form-title">Nouvelle affectation</div>
+            <div class="form-subtitle">Sélectionnez le matériel et le fonctionnaire concerné.</div>
+        </div>
+
+        <div class="form-body">
+            <!-- Info Box -->
+            <div class="info-box">
+                <div class="info-box-title">
+                    <span>ℹ️</span>
+                    <span>Logique d'affectation</span>
+                </div>
+                <div class="info-box-text">
+                    Sélectionnez d'abord le <strong>Type</strong> et la <strong>Marque</strong> pour voir apparaître les numéros de série disponibles.
+                </div>
+            </div>
+
+            <!-- FORMULAIRE (Ajout de data-url) -->
+            <form method="post" id="affectationForm" data-equipements-url="{% url 'ajax_load_equipements' %}">
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                    <div class="info-box" style="border-left-color: var(--danger-color); background: #fef2f2;">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <!-- CHAMP 1 : FONCTIONNAIRE -->
+                <p>
+                    <label for="id_fonctionnaire">Fonctionnaire :</label>
+                    {{ form.fonctionnaire }}
+                    
+                     
+                    {% if form.fonctionnaire.errors %}
+                        <div style="background-color: #fef2f2; border: 1px solid #ef4444; border-radius: 6px; padding: 10px; margin-top: 5px;">
+                            <div style="display: flex; gap: 8px; align-items: center; color: #b91c1c; font-size: 0.875rem; font-weight: 600;">
+                                <span>⚠️</span>
+                                <span>Erreur d'affectation :</span>
+                            </div>
+                            <div style="color: #b91c1c; font-size: 0.85rem; margin-top: 2px; margin-left: 28px;">
+                                {{ form.fonctionnaire.errors|striptags }}
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                </p>
+
+                <!-- CHAMP 2 : TYPE DE MATERIEL -->
+                <p>
+                    <label for="id_type_materiel">Type de matériel :</label>
+                    {{ form.type_materiel }}
+                </p>
+
+                <!-- CHAMP 3 : MARQUE -->
+                <p>
+                    <label for="id_marque">Marque :</label>
+                    <!-- On retire les attributs hx-* et on garde le select standard -->
+                    {{ form.marque }}
+                </p>
+
+                <!-- CHAMP 4 : EQUIPEMENT -->
+                <p>
+                    <label for="id_equipement">Numéro de Série (Equipement) :</label>
+                    
+                    <!-- Ajout de data-selected pour retenir l'ID en cas d'erreur -->
+                    <select name="equipement" id="id_equipement" 
+                            data-selected="{{ form.equipement.value|default_if_none:'' }}">
+                        <option value="">-- Sélectionnez d'abord type et marque --</option>
+                    </select>
+                    
+                    <!-- ICI : Affichage de l'erreur spécifique à ce champ -->
+                    <div style="color: var(--danger-color); font-size: 0.8rem; margin-top: 5px;">
+                        {{ form.equipement.errors }}
+                    </div>
+                </p>
+            </form>
+        </div>
+
+        <div class="form-actions">
+            <a href="{% url 'home' %}" class="btn btn-secondary">
+                <span>←</span>
+                <span>Annuler</span>
+            </a>
+            <button type="submit" form="affectationForm" class="btn btn-primary">
+                <span>💾</span>
+                <span>Enregistrer l'affectation</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const typeSelect = document.querySelector('#id_type_materiel');
+        const marqueSelect = document.querySelector('#id_marque');
+        const equipementSelect = document.querySelector('#id_equipement');
+        const form = document.querySelector('#affectationForm');
+        
+        // Fonction pour charger les équipements
+        function loadEquipements() {
+            const url = form.getAttribute('data-equipements-url');
+            const typeId = typeSelect.value;
+            const marqueVal = marqueSelect.value;  
+            // On récupère la valeur précédente s'il y a eu une erreur
+            const selectedValue = equipementSelect.getAttribute('data-selected');
+
+            if (!typeId || !marqueVal) {
+                equipementSelect.innerHTML = '<option value="">-- Sélectionnez d\'abord type et marque --</option>';
+                equipementSelect.disabled = true;
+                return;
+            }
+
+            // Petit indicateur de chargement
+            if(equipementSelect.options.length <= 1) {
+                 equipementSelect.innerHTML = '<option value="">Chargement en cours...</option>';
+            }
+
+            fetch(`${url}?type_materiel=${typeId}&marque=${marqueVal}`)
+                .then(response => response.json())
+                .then(data => {
+                    equipementSelect.innerHTML = '<option value="">Choisissez un équipement (S/N)</option>';
+                    
+                    if (data.length === 0) {
+                        const option = document.createElement('option');
+                        option.text = "Aucun équipement disponible";
+                        equipementSelect.appendChild(option);
+                    } else {
+                        data.forEach(function(item) {
+                            const option = document.createElement('option');
+                            option.value = item.id;
+                            option.textContent = item.sn + (item.modele ? ` (${item.modele})` : ''); 
+                            
+                            // Si cet item correspond à celui qu'on avait choisi avant l'erreur, on le resélectionne
+                            // Convertir en String pour être sûr de la comparaison
+                            if (String(item.id) === String(selectedValue)) {
+                                option.selected = true;
+                            }
+                            
+                            equipementSelect.appendChild(option);
+                        });
+                    }
+                    
+                    equipementSelect.disabled = false;
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    equipementSelect.innerHTML = '<option value="">Erreur de chargement</option>';
+                });
+        }
+
+        if(typeSelect && marqueSelect && equipementSelect) {
+            // Écouteurs d'événements
+            typeSelect.addEventListener('change', function() {
+                // Quand on change le type, on reset la sélection précédente
+                equipementSelect.setAttribute('data-selected', '');
+                loadEquipements();
+            });
+            marqueSelect.addEventListener('change', function() {
+                // Quand on change la marque, on reset la sélection précédente
+                equipementSelect.setAttribute('data-selected', '');
+                loadEquipements();
+            });
+
+  
+            if (typeSelect.value && marqueSelect.value) {
+                loadEquipements();
+            } else {
+                equipementSelect.disabled = true;
+            }
+        }
+        
+        // Style pour les champs en erreur
+        const errorDivs = document.querySelectorAll('.errorlist, .text-danger'); // Ajustez sélecteurs selon besoin
+        errorDivs.forEach(div => {
+           const parent = div.closest('p');
+           if(parent) {
+               const input = parent.querySelector('input, select');
+               if(input) input.style.borderColor = 'var(--danger-color)';
+           }
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventaire - Tableau de bord</title>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --secondary-color: #06b6d4;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-900: #111827;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 1.5rem 0;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .welcome-section {
+            text-align: center;
+        }
+
+        .welcome-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.025em;
+        }
+
+        .welcome-subtitle {
+            color: var(--gray-600);
+            font-size: 1rem;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem 3rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+            transition: all 0.2s;
+        }
+
+        .stat-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .stat-icon.blue {
+            background: rgba(79, 70, 229, 0.1);
+            color: var(--primary-color);
+        }
+
+        .stat-icon.cyan {
+            background: rgba(6, 182, 212, 0.1);
+            color: var(--secondary-color);
+        }
+
+        .stat-icon.green {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .stat-icon.orange {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            font-weight: 500;
+        }
+
+        /* Section Header */
+        .section-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-subtitle {
+            color: var(--gray-600);
+            font-size: 0.875rem;
+        }
+
+        /* Menu Grid */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            list-style: none;
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+            transition: all 0.2s;
+        }
+
+        .menu-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .card-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+        }
+
+        .btn-add {
+            background: var(--primary-color);
+            color: white;
+            border: 1px solid transparent;
+        }
+
+        .btn-add:hover {
+            background: var(--primary-hover);
+            transform: translateX(3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-list {
+            background: white;
+            color: var(--gray-700);
+            border: 1px solid var(--gray-300);
+        }
+
+        .btn-list:hover {
+            background: var(--gray-50);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            transform: translateX(3px);
+        }
+
+        .btn-text {
+            flex: 1;
+        }
+
+        .btn-icon {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            color: white;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .quick-actions-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .quick-actions-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .quick-actions-subtitle {
+            opacity: 0.9;
+            font-size: 0.875rem;
+        }
+
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .quick-action-btn {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.2s;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .quick-action-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .quick-action-icon {
+            font-size: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .menu-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 0 1rem;
+            }
+
+            .container {
+                padding: 0 1rem 2rem;
+            }
+
+            .header-top {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .welcome-section {
+                text-align: left;
+                width: 100%;
+            }
+
+            .welcome-title {
+                font-size: 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-card {
+                padding: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="header-top">
+                <div class="logo-section">
+                    <div class="logo">📦</div>
+                    <div class="logo-text">Inventaire</div>
+                </div>
+            </div>
+            <div class="welcome-section">
+                <h1 class="welcome-title">Tableau de bord</h1>
+                <p class="welcome-subtitle">Gérez efficacement vos ressources et équipements</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Stats Grid (Optional - can be populated with real data) -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{ services_count }}</div>
+                        <div class="stat-label">Services</div>
+                    </div>
+                    <div class="stat-icon blue">🏢</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{ fonctionnaires_count }}</div>
+                        <div class="stat-label">Fonctionnaires</div>
+                    </div>
+                    <div class="stat-icon cyan">👤</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{ equipements_count }}</div>
+                        <div class="stat-label">Équipements</div>
+                    </div>
+                    <div class="stat-icon green">💻</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">{{ subdivisions_count }}</div>
+                        <div class="stat-label">Subdivisions</div>
+                    </div>
+                    <div class="stat-icon orange">🏢</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <div class="quick-actions-header">
+                <div class="quick-actions-title">Actions rapides</div>
+                <div class="quick-actions-subtitle">Accès direct aux fonctionnalités les plus utilisées</div>
+            </div>
+            <div class="quick-actions-grid">
+                <a href="{% url 'ajouter_equipement' %}" class="quick-action-btn">
+                    <span class="quick-action-icon">💻</span>
+                    <span>Nouvel équipement</span>
+                </a>
+
+
+                <a href="{% url 'ajouter_fonctionnaire' %}" class="quick-action-btn">
+                    <span class="quick-action-icon">👤</span>
+                    <span>Nouveau fonctionnaire</span>
+                </a>
+
+                <a href="{% url 'ajouter_affectation' %}" class="quick-action-btn">
+                    <span class="quick-action-icon">➡️💻</span>
+                    <span>Affectation </span>
+                </a>
+                <a href="{% url 'liste_equipements' %}" class="quick-action-btn">
+                    <span class="quick-action-icon">📋</span>
+                    <span>Voir équipements</span>
+                </a>
+                <a href="{% url 'liste_historiques' %}" class="quick-action-btn">
+                    <span class="quick-action-icon">📊</span>
+                    <span>Historiques</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Section Header -->
+        <div class="section-header">
+            <h2 class="section-title">Modules de gestion</h2>
+            <p class="section-subtitle">Accédez à tous les modules de votre système d'inventaire</p>
+        </div>
+
+        <!-- Menu Grid -->
+        <ul class="menu-grid">
+
+            <!-- Affectation -->
+            <li class="menu-card">
+                <div class="card-header">
+                    <div class="card-icon">➡️</div>
+                    <h2 class="card-title">Affectation</h2>
+                </div>
+                <div class="card-actions">
+                    <a href="{% url 'ajouter_affectation' %}" class="btn btn-add">
+                        <span class="btn-text">Ajouter une affectation</span>
+                        <span class="btn-icon">+</span>
+                    </a>
+                    <a href="{% url 'liste_affectations' %}" class="btn btn-list">
+                        <span class="btn-text">Liste des affectations</span>
+                        <span class="btn-icon">→</span>
+                    </a>
+                </div>
+            </li>
+
+            <!-- Fonctionnaires -->
+            <li class="menu-card">
+                <div class="card-header">
+                    <div class="card-icon">👤</div>
+                    <h2 class="card-title">Fonctionnaires</h2>
+                </div>
+                <div class="card-actions">
+                    <a href="{% url 'ajouter_fonctionnaire' %}" class="btn btn-add">
+                        <span class="btn-text">Ajouter un fonctionnaire</span>
+                        <span class="btn-icon">+</span>
+                    </a>
+                    <a href="{% url 'liste_fonctionnaires' %}" class="btn btn-list">
+                        <span class="btn-text">Liste des fonctionnaires</span>
+                        <span class="btn-icon">→</span>
+                    </a>
+                </div>
+            </li>
+
+            <!-- Équipements -->
+            <li class="menu-card">
+                <div class="card-header">
+                    <div class="card-icon">💻</div>
+                    <h2 class="card-title">Équipements</h2>
+                </div>
+                <div class="card-actions">
+                    <a href="{% url 'ajouter_equipement' %}" class="btn btn-add">
+                        <span class="btn-text">Ajouter un équipement</span>
+                        <span class="btn-icon">+</span>
+                    </a>
+                    <a href="{% url 'liste_equipements' %}" class="btn btn-list">
+                        <span class="btn-text">Liste des équipements</span>
+                        <span class="btn-icon">→</span>
+                    </a>
+                </div>
+            </li>
+
+            <!-- Services -->
+            <li class="menu-card">
+                <div class="card-header">
+                    <div class="card-icon">🏢</div>
+                    <h2 class="card-title">Services</h2>
+                </div>
+                <div class="card-actions">
+                    <a href="{% url 'ajouter_service' %}" class="btn btn-add">
+                        <span class="btn-text">Ajouter un service</span>
+                        <span class="btn-icon">+</span>
+                    </a>
+                    <a href="{% url 'liste_services' %}" class="btn btn-list">
+                        <span class="btn-text">Liste des services</span>
+                        <span class="btn-icon">→</span>
+                    </a>
+                </div>
+            </li>
+
+            <!-- Subdivisions / Bureaux -->
+            <li class="menu-card">
+                <div class="card-header">
+                    <div class="card-icon">🏛️</div>
+                    <h2 class="card-title">Subdivisions / Bureaux</h2>
+                </div>
+                <div class="card-actions">
+                    <a href="{% url 'ajouter_subdivision' %}" class="btn btn-add">
+                        <span class="btn-text">Ajouter une subdivision</span>
+                        <span class="btn-icon">+</span>
+                    </a>
+                    <a href="{% url 'liste_subdivisions' %}" class="btn btn-list">
+                        <span class="btn-text">Liste des subdivisions</span>
+                        <span class="btn-icon">→</span>
+                    </a>
+                </div>
+            </li>
+
+            <!-- Secteur / Section -->
+            <li class="menu-card">
+                <div class="card-header">
+                    <div class="card-icon">🏢</div>
+                    <h2 class="card-title">Secteurs / Sections</h2>
+                </div>
+                <div class="card-actions">
+                    <a href="{% url 'ajouter_secteur' %}" class="btn btn-add">
+                        <span class="btn-text">Ajouter un secteur</span>
+                        <span class="btn-icon">+</span>
+                    </a>
+                    <a href="{% url 'liste_secteurs' %}" class="btn btn-list">
+                        <span class="btn-text">Liste des secteurs</span>
+                        <span class="btn-icon">→</span>
+                    </a>
+                </div>
+            </li>
+
+            <!-- Bâtiments -->
+            <li class="menu-card">
+                <div class="card-header">
+                    <div class="card-icon">🏢</div>
+                    <h2 class="card-title">Bâtiments</h2>
+                </div>
+                <div class="card-actions">
+                    <a href="{% url 'ajouter_batiment' %}" class="btn btn-add">
+                        <span class="btn-text">Ajouter un bâtiment</span>
+                        <span class="btn-icon">+</span>
+                    </a>
+                    <a href="{% url 'liste_batiments' %}" class="btn btn-list">
+                        <span class="btn-text">Liste des bâtiments</span>
+                        <span class="btn-icon">→</span>
+                    </a>
+                </div>
+            </li>
+
+            <!-- Bureaux -->
+            <li class="menu-card">
+                <div class="card-header">
+                    <div class="card-icon">🚪</div>
+                    <h2 class="card-title">Bureaux</h2>
+                </div>
+                <div class="card-actions">
+                    <a href="{% url 'ajouter_bureau' %}" class="btn btn-add">
+                        <span class="btn-text">Ajouter un bureau</span>
+                        <span class="btn-icon">+</span>
+                    </a>
+                    <a href="{% url 'liste_bureaux' %}" class="btn btn-list">
+                        <span class="btn-text">Liste des bureaux</span>
+                        <span class="btn-icon">→</span>
+                    </a>
+                </div>
+            </li>
+
+
+            <!-- Historiques -->
+            <li class="menu-card">
+                <div class="card-header">
+                    <div class="card-icon">📊</div>
+                    <h2 class="card-title">Historiques</h2>
+                </div>
+                <div class="card-actions">
+                    <a href="{% url 'ajouter_historique' %}" class="btn btn-add">
+                        <span class="btn-text">Ajouter un historique</span>
+                        <span class="btn-icon">+</span>
+                    </a>
+                    <a href="{% url 'liste_historiques' %}" class="btn btn-list">
+                        <span class="btn-text">Liste des historiques</span>
+                        <span class="btn-icon">→</span>
+                    </a>
+                </div>
+            </li>
+
+
+        </ul>
+    </div>
+</body>
+</html>

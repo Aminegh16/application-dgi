@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Affectations</title>
+    <style>
+        /* --- STYLE IDENTIQUE AU PRECEDENT --- */
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --danger-color: #ef4444;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-900: #111827;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: var(--gray-50); color: var(--gray-900); line-height: 1.6; min-height: 100vh; }
+
+        /* Header */
+        .header { background: white; border-bottom: 1px solid var(--gray-200); padding: 1.5rem 0; margin-bottom: 2rem; box-shadow: var(--shadow-sm); }
+        .header-content { max-width: 1280px; margin: 0 auto; padding: 0 2rem; }
+        .breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: var(--gray-600); margin-bottom: 0.5rem; }
+        .breadcrumb a { color: var(--gray-600); text-decoration: none; transition: color 0.2s; }
+        .breadcrumb a:hover { color: var(--primary-color); }
+        .page-title-section { display: flex; align-items: center; gap: 1rem; }
+        .page-icon { width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary-color), var(--primary-hover)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: var(--shadow-md); color: white; }
+        h1 { font-size: 1.875rem; font-weight: 700; color: var(--gray-900); letter-spacing: -0.025em; }
+
+        /* Container */
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 2rem 3rem; }
+
+        /* Toolbar */
+        .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+        .search-box { flex: 1; min-width: 280px; max-width: 400px; position: relative; }
+        .search-box input { width: 100%; padding: 0.625rem 1rem 0.625rem 2.5rem; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 0.875rem; transition: all 0.2s; background: white; }
+        .search-box input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
+        .search-icon { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: var(--gray-600); font-size: 1rem; }
+        .toolbar-actions { display: flex; gap: 0.75rem; }
+
+        /* Buttons */
+        .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.625rem 1.25rem; font-size: 0.875rem; font-weight: 500; border-radius: 8px; text-decoration: none; border: none; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+        .btn-primary { background: var(--primary-color); color: white; box-shadow: var(--shadow-sm); }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        .btn-secondary { background: white; color: var(--gray-700); border: 1px solid var(--gray-300); }
+        .btn-secondary:hover { background: var(--gray-50); }
+
+        /* Card & Table */
+        .card { background: white; border-radius: 12px; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); overflow: hidden; }
+        .card-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--gray-200); background: var(--gray-50); display: flex; justify-content: space-between; align-items: center; }
+        .card-title { font-size: 1rem; font-weight: 600; color: var(--gray-900); }
+        .count-badge { background: var(--primary-color); color: white; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+        .table-wrapper { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        thead { background: var(--gray-50); border-bottom: 1px solid var(--gray-200); }
+        th { padding: 0.875rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.05em; }
+        td { padding: 1rem 1.5rem; font-size: 0.875rem; color: var(--gray-700); border-bottom: 1px solid var(--gray-200); vertical-align: middle; }
+        tbody tr:hover { background: var(--gray-50); }
+        tbody tr:last-child td { border-bottom: none; }
+
+        /* Custom Styles pour Affectation */
+        .badge-status { display: inline-flex; align-items: center; padding: 0.25rem 0.6rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+        
+        .badge-active { background-color: #dcfce7; color: #166534; /* Vert */ }
+        .badge-inactive { background-color: #f3f4f6; color: #4b5563; /* Gris */ }
+
+        .sn-tag { background: var(--gray-100); padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 0.8rem; color: var(--gray-600); border: 1px solid var(--gray-200); }
+
+        /* Action Buttons */
+        .action-buttons { display: flex; gap: 0.5rem; justify-content: flex-end; }
+        .action-btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.5rem; border-radius: 6px; text-decoration: none; transition: all 0.2s; }
+        
+        .btn-return { color: var(--warning-color); background: #fffbeb; }
+        .btn-return:hover { background: #fef3c7; }
+        
+        .btn-edit { color: var(--primary-color); background: rgba(79, 70, 229, 0.1); }
+        .btn-edit:hover { background: rgba(79, 70, 229, 0.2); }
+        
+        .btn-delete { color: var(--danger-color); background: rgba(239, 68, 68, 0.1); }
+        .btn-delete:hover { background: rgba(239, 68, 68, 0.2); }
+
+        /* Empty State */
+        .empty-state { text-align: center; padding: 4rem 2rem; }
+        .empty-icon { width: 80px; height: 80px; background: var(--gray-100); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin: 0 auto 1.5rem; }
+        .empty-title { font-size: 1.125rem; font-weight: 600; color: var(--gray-900); margin-bottom: 0.5rem; }
+        .empty-text { color: var(--gray-600); margin-bottom: 1.5rem; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="breadcrumb">
+                <a href="{% url 'home' %}">Accueil</a>
+                <span>/</span>
+                <span>Affectations</span>
+            </div>
+            <div class="page-title-section">
+                <!-- Icone Changée pour représenter un échange/affectation -->
+                <div class="page-icon">📋</div>
+                <h1>Liste des Affectations</h1>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Rechercher (fonctionnaire, SN, marque)...">
+            </div>
+            <div class="toolbar-actions">
+                <a href="{% url 'ajouter_affectation' %}" class="btn btn-primary">
+                    <span>➕</span>
+                    <span>Nouvelle Affectation</span>
+                </a>
+                <a href="{% url 'home' %}" class="btn btn-secondary">
+                    <span>🏠</span>
+                    <span>Accueil</span>
+                </a>
+            </div>
+        </div>
+
+<!-- Table Card -->
+<div class="card">
+    {% if affectations %}
+    <div class="card-header">
+        <div class="card-title">Historique des affectations</div>
+        <div class="count-badge">{{ affectations|length }}</div>
+    </div>
+    
+    <div class="table-wrapper">
+        <table id="affectationTable">
+            <thead>
+                <tr>
+                    <th>Fonctionnaire</th>
+                    <th>Équipement (Détails)</th>
+                    <th>Statut</th>
+                    <th>Date Retour</th>
+                    <th style="text-align: right;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in affectations %}
+                <tr class="{% if a.date_fin %}row-archived{% endif %}">
+                    <!-- COL 1: Fonctionnaire -->
+                    <td>
+                        <div style="font-weight: 600; color: var(--gray-900);">
+                            {{ a.fonctionnaire.nom }} {{ a.fonctionnaire.prenom }}
+                        </div>
+                        <div style="font-size: 0.8rem; color: var(--gray-600);">
+                            {{ a.fonctionnaire.service.libelle|default:"Service non renseigné" }}
+                        </div>
+                    </td>
+
+                    <!-- COL 2: Equipement -->
+                    <td>
+                        <div>
+                            <strong>{{ a.equipement.type_materiel }}</strong> - {{ a.equipement.marque }}
+                        </div>
+                        <div style="margin-top: 4px;">
+                            <span class="sn-tag" style="background: #eef2ff; color: #4f46e5; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 0.8rem;">
+                                SN: {{ a.equipement.sn }}
+                            </span>
+                        </div>
+                    </td>
+
+                    <!-- COL 3: Statut -->
+                    <td>
+                        {% if a.date_fin %}
+                            <!-- Statut Restitué (Gris/Rouge) -->
+                            <span style="display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background-color: #f3f4f6; color: #4b5563; border: 1px solid #d1d5db;">
+                                ⏹️ Restitué
+                            </span>
+                        {% else %}
+                            <!-- Statut En cours (Vert) -->
+                            <span style="display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0;">
+                                ● En cours
+                            </span>
+                        {% endif %}
+                    </td>
+
+                    <!-- COL 4: Date Retour -->
+                    <td>
+                        {% if a.date_fin %}
+                            <div style="font-weight: 500; color: var(--gray-700);">
+                                {{ a.date_fin|date:"d/m/Y" }}
+                            </div>
+                        {% else %}
+                            <span style="color: #9ca3af;">--</span>
+                        {% endif %}
+                    </td> 
+
+                    <!-- COL 5: Actions -->
+                    <td>
+                        <div class="action-buttons" style="display: flex; gap: 5px; justify-content: flex-end;">
+                            
+                            <!-- BOUTON RESTITUER (Uniquement si pas encore de date de fin) -->
+                            {% if not a.date_fin %}
+                            <a href="{% url 'restituer_equipement' a.id %}" 
+                               class="action-btn btn-return" 
+                               style="background: #ecfdf5; color: #059669; padding: 6px; border-radius: 6px; text-decoration: none;"
+                               title="Marquer comme restitué"
+                               onclick="return confirm('Confirmer la restitution de cet équipement ?\n\nCela libérera le matériel pour une nouvelle affectation.');">
+                                <span>↩️</span>
+                            </a>
+                            {% endif %}
+
+                            <!-- Bouton Modifier -->
+                            <a href="{% url 'modifier_affectation' a.id %}" 
+                               class="action-btn" 
+                               style="background: #eff6ff; color: #4f46e5; padding: 6px; border-radius: 6px; text-decoration: none;"
+                               title="Modifier">
+                                <span>✏️</span>
+                            </a>
+                            
+                            <!-- Bouton Supprimer -->
+                            <a href="{% url 'supprimer_affectation' a.id %}" 
+                               class="action-btn" 
+                               style="background: #fef2f2; color: #ef4444; padding: 6px; border-radius: 6px; text-decoration: none;"
+                               title="Supprimer définitivement"
+                               onclick="return confirm('Attention: Supprimer l\'affectation efface l\'historique.\nPréférez la restitution pour garder une trace.\n\nVoulez-vous vraiment supprimer ?');">
+                                <span>🗑️</span>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+</div>
+            {% else %}
+            <!-- Empty State -->
+            <div class="empty-state">
+                <div class="empty-icon">🤝</div>
+                <div class="empty-title">Aucune affectation</div>
+                <div class="empty-text">Tout le matériel est actuellement en stock ou non enregistré.</div>
+                <a href="{% url 'ajouter_affectation' %}" class="btn btn-primary">
+                    <span>➕</span>
+                    <span>Créer une première affectation</span>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Script de recherche (Standardisé) -->
+    <script>
+        document.getElementById('searchInput')?.addEventListener('input', function(e) {
+            const normalizeText = (text) => {
+                return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+            };
+
+            const searchTerm = normalizeText(e.target.value);
+            const rows = document.querySelectorAll('#affectationTable tbody tr');
+            
+            rows.forEach(row => {
+                // On cherche dans tout le texte de la ligne
+                const text = normalizeText(row.textContent);
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>

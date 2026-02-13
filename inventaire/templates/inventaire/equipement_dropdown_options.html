@@ -1,0 +1,6 @@
+<option value="">-- Sélectionnez un numéro de série --</option>
+{% for equipement in equipements %}
+    <option value="{{ equipement.id }}">
+        {{ equipement.sn }} ({{ equipement.modele }})
+    </option>
+{% endfor %}

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier un Secteur</title>
+    <style>
+        /* --- STYLE "PROPRE / ENTREPRISE" --- */
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --danger-color: #ef4444;
+            --danger-hover: #dc2626;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-900: #111827;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 1.5rem 0;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            margin-bottom: 0.5rem;
+        }
+
+        .breadcrumb a {
+            color: var(--gray-600);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--primary-color);
+        }
+
+        .page-title-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .page-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--warning-color), #f97316);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .page-title-wrapper {
+            flex: 1;
+        }
+
+        h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            letter-spacing: -0.025em;
+        }
+
+        .id-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            background: var(--gray-100);
+            color: var(--gray-700);
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.375rem;
+        }
+
+        /* Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem 3rem;
+        }
+
+        /* Info Alert */
+        .info-alert {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(79, 70, 229, 0.05));
+            border: 1px solid rgba(79, 70, 229, 0.2);
+            border-left: 4px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .info-alert-icon {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .info-alert-content {
+            flex: 1;
+        }
+
+        .info-alert-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .info-alert-text {
+            font-size: 0.875rem;
+            color: var(--gray-700);
+        }
+
+        /* Form Card */
+        .form-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+            overflow: hidden;
+        }
+
+        .form-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--gray-200);
+            background: var(--gray-50);
+        }
+
+        .form-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .form-subtitle {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        .form-body {
+            padding: 2rem;
+        }
+
+        /* Form Fields (Applied to form.as_p) */
+        form p {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gray-700);
+            margin-bottom: 0.5rem;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.625rem 0.875rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-family: inherit;
+            transition: all 0.2s;
+            background: white;
+            color: var(--gray-900);
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        input:disabled,
+        select:disabled {
+            background-color: var(--gray-100);
+            color: var(--gray-600);
+            cursor: not-allowed;
+            border-color: var(--gray-200);
+        }
+
+        /* Actions */
+        .form-actions {
+            padding: 1.5rem 2rem;
+            background: var(--gray-50);
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.25rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 8px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--gray-700);
+            border: 1px solid var(--gray-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-50);
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-danger:hover {
+            background: var(--danger-hover);
+            transform: translateY(-1px);
+        }
+
+        /* Indicators and Errors */
+        label:has(+ input:required)::after,
+        label:has(+ select:required)::after {
+            content: "*";
+            color: var(--danger-color);
+            margin-left: 0.25rem;
+        }
+
+        .errorlist {
+            list-style: none;
+            margin: 0.5rem 0 0 0;
+            color: var(--danger-color);
+            font-size: 0.75rem;
+        }
+        
+        input.error, select.error {
+            border-color: var(--danger-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content { padding: 0 1rem; }
+            .container { padding: 0 1rem 2rem; }
+            .form-actions { flex-direction: column-reverse; }
+            .btn { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="breadcrumb">
+                <a href="{% url 'home' %}">Accueil</a>
+                <span>/</span>
+                <a href="{% url 'liste_secteurs' %}">Secteurs</a>
+                <span>/</span>
+                <span>Modifier</span>
+            </div>
+            <div class="page-title-section">
+                <!-- Icône Crayon -->
+                <div class="page-icon">✏️</div>
+                <div class="page-title-wrapper">
+                    <h1>Modifier le secteur</h1>
+                    <span class="id-badge">
+                        <span>🆔</span>
+                        <span>#{{ secteur.id }}</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Info Alert -->
+        <div class="info-alert">
+            <div class="info-alert-icon">💡</div>
+            <div class="info-alert-content">
+                <div class="info-alert-title">Modification en cours</div>
+                <div class="info-alert-text">
+                    Vous êtes en train de modifier le secteur : <strong>{{ secteur.libelle }}</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Card -->
+        <div class="form-card">
+            <div class="form-header">
+                <div class="form-title">Informations du secteur</div>
+                <div class="form-subtitle">Modifiez les informations ci-dessous</div>
+            </div>
+
+            <div class="form-body">
+                <!-- Ajout de data-url pour le script AJAX au cas où Service/Subdivision sont éditables -->
+                <form method="post" id="editSecteurForm" data-subdivisions-url="{% url 'ajax_load_subdivisions' %}">
+                    {% csrf_token %}
+                    <!-- J'utilise form.as_p pour garantir l'affichage de tous les champs (Service, Sub, Libellé) -->
+                    <!-- L'ordre dépendra de field_order dans forms.py comme discuté précédemment -->
+                    {{ form.as_p }}
+                </form>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'liste_secteurs' %}" class="btn btn-secondary">
+                    <span>←</span>
+                    <span>Annuler</span>
+                </a>
+                <button type="submit" form="editSecteurForm" class="btn btn-primary">
+                    <span>💾</span>
+                    <span>Enregistrer les modifications</span>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Script AJAX (Nécessaire seulement si vous autorisez la modification du Service/Subdivision) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const errorLists = document.querySelectorAll('.errorlist');
+            errorLists.forEach(errorList => {
+                const field = errorList.previousElementSibling;
+                if (field) field.classList.add('error');
+            });
+
+            // Logique AJAX Service -> Subdivision (identique à la page Ajouter)
+            const serviceSelect = document.querySelector('#id_service');
+            const subdivisionSelect = document.querySelector('#id_subdivision');
+            const form = document.querySelector('#editSecteurForm');
+            
+            // On ne lance le script que si les champs existent et ne sont pas désactivés
+            if(serviceSelect && subdivisionSelect && !serviceSelect.disabled) {
+                const url = form.getAttribute('data-subdivisions-url');
+
+                serviceSelect.addEventListener('change', function() {
+                    const serviceId = this.value;
+
+                    if (!serviceId) {
+                        subdivisionSelect.innerHTML = '<option value="">---------</option>';
+                        return;
+                    }
+
+                    document.body.style.cursor = 'wait';
+
+                    fetch(`${url}?service_id=${serviceId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            // On garde la subdivision actuelle si possible, sinon on reset
+                            const currentSubId = subdivisionSelect.value;
+                            
+                            subdivisionSelect.innerHTML = '<option value="">Choisissez une subdivision</option>';
+                            data.forEach(function(subdivision) {
+                                const option = document.createElement('option');
+                                option.value = subdivision.id;
+                                option.textContent = subdivision.libelle;
+                                subdivisionSelect.appendChild(option);
+                            });
+                            
+
+                            document.body.style.cursor = 'default';
+                        })
+                        .catch(error => {
+                            console.error('Erreur:', error);
+                            document.body.style.cursor = 'default';
+                        });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
