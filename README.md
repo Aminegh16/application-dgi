@@ -5,6 +5,40 @@ Elle permet d’importer des données depuis des fichiers Excel, de gérer les �
 
 L’application est conçue pour être simple à installer et à utiliser, et peut être lancée localement via le serveur Django intégré.
 
+## Qu’est-ce que Django ?
+
+Django est un framework web Python qui permet de créer des applications web de manière rapide, sécurisée et structurée.
+
+Il repose sur le principe MVT (Model – View – Template) :
+
+**Model** : définit la structure des données (tables de la base de données)\
+**View**: contient la logique de l’application (traitement des données)\
+**Template** : gère l’affichage (pages HTML)
+
+Django s’occupe automatiquement de nombreuses tâches techniques :
+
+- Connexion à la base de données
+- Gestion des utilisateurs
+- Sécurité
+- Routage des URLs
+- Serveur de développement intégré
+
+## Comment fonctionne une application Django ?
+
+1- L’utilisateur accède à une URL depuis son navigateur
+
+2- Django redirige cette URL vers une view
+
+3- La view récupère ou modifie les données via les models
+
+4- Les données sont envoyées à un template HTML
+
+5- La page est affichée dans le navigateur
+
+👉 Tout ce processus est géré automatiquement par Django.
+
+## Documentation : https://docs.djangoproject.com/en/6.0/
+
 # Guide d’installation
 ## Prérequis
 Python 3.8 ou plus\
@@ -84,6 +118,7 @@ application-dgi/
 ├── Classeur2.xlsx           # Données Excel
 └── README.md                # Documentation
 ```
+
 
 
 
